@@ -9,12 +9,12 @@ const PORT = process.env.PORT || 5003;
 
 // Middleware
 app.use(express.json()); // To parse incoming JSON data
-// app.use(cors()); // Enable cross-origin requests
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Allow requests from your frontend
-  })
-);
+app.use(cors()); // Enable cross-origin requests
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173", // Allow requests from your frontend
+//   })
+// );
 
 // MongoDB connection (replace with your MongoDB URI)
 mongoose
