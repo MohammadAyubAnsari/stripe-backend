@@ -1,52 +1,40 @@
+// app.js
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const bodyParser = require("body-parser");
+const { configDotenv } = require("dotenv");
 
-require("dotenv").config();
+// Load environment variables
+configDotenv();
+
+// Import routes
+const userRoutes = require("./routes/user.routes");
 
 const app = express();
-const PORT = process.env.PORT || 5003;
+const port = 5005;
 
-// Middleware
-app.use(express.json()); // To parse incoming JSON data
-app.use(cors()); // Enable cross-origin requests
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173", // Allow requests from your frontend
-//   })
-// );
-
-// MongoDB connection (replace with your MongoDB URI)
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error(err));
+  .then(() => {
+    console.log("MongoDB connected successfully");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
 
-// User Schema
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  wallet: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-});
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
 
-const User = mongoose.model("User", userSchema);
+// Routes
+app.use("/api", userRoutes);
 
-// POST route to store user data
-app.post("/api/users", async (req, res) => {
-  try {
-    const { name, wallet } = req.body;
-    const newUser = new User({ name, wallet });
-    await newUser.save();
-    res.status(201).json({ message: "User data stored successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error storing data", error });
-  }
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
