@@ -24,8 +24,8 @@ const saveData = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:5173/?status=success`,
-      cancel_url: `http://localhost:5173/?status=cancelled`,
+      success_url: `${process.env.FRONTEND}/?status=success`,
+      cancel_url: `${process.env.FRONTEND}/?status=cancelled`,
     });
 
     res.json({ url: session.url });
